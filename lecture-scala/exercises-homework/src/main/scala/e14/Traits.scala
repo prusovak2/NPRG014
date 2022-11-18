@@ -16,8 +16,27 @@ trait Ordered[T]:
 	def <=(that: T) = (this compare that) <= 0
 	def >=(that: T) = (this compare that) >= 0
 
+trait VerboseComparable[T]:
+	def compare(that: T): Int
 
-class Rational(n: Int, d: Int) extends Ordered[Rational]:
+	def #<(that: T): String = 
+		val isOrIsnt: String = if(this compare that) < 0 then "is" else "isn't"
+		return s"${this} ${isOrIsnt} less than ${that}"
+
+	def #>(that: T): String = 
+		val isOrIsnt: String = if(this compare that) > 0 then "is" else "isn't"
+		return s"${this} ${isOrIsnt} greater than ${that}"
+
+	def #<=(that: T): String = 
+		val isOrIsnt: String = if(this compare that) <= 0 then "is" else "isn't"
+		return s"${this} ${isOrIsnt} less than or equal to than ${that}"
+
+	def #>=(that: T): String = 
+		val isOrIsnt: String = if(this compare that) >= 0 then "is" else "isn't"
+		return s"${this} ${isOrIsnt} greater than or equal to than ${that}"
+
+
+class Rational(n: Int, d: Int) extends Ordered[Rational], VerboseComparable[Rational]:
 	require(d != 0)
 
 	private val g = gcd(n.abs, d.abs)
@@ -60,6 +79,10 @@ object Traits:
 
 		println(a > b)
 		println(a < b)		
+
+		println(a #< b)
+		println(a #>= b) // 3/2 is more or equal to 73/56
+		println(a #< b)	// 3/2 isn't strictly less than 73/56	
 
 		/* ASSIGNMENT:
 		 * Introduce a new trait VerboseComparable that adds operations #<, #<=, #>, #>=, which return a string result as follows:
